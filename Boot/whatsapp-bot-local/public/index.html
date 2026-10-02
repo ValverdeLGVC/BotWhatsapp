@@ -61,10 +61,6 @@
                 <label>Mensagem Principal:</label>
                 <textarea id="msgMain" rows="4"></textarea>
             </div>
-            <div class="form-group">
-                <label>Mensagem de Persistência:</label>
-                <textarea id="msgPersist" rows="4"></textarea>
-            </div>
             <button onclick="saveMessages()" class="primary">Salvar Mensagens</button>
         </section>
 
@@ -107,9 +103,7 @@
                 </div>
                 <div class="sub-setting">Intervalo entre respostas principais (min): <input type="number" id="cfgCooldown" min="0" step="1"></div>
                 <div class="sub-setting">Aguardar antes de responder (seg): <input type="number" id="cfgReplyDelay" min="0" step="1"></div>
-                <label><input type="checkbox" id="cfgPersistence"> Ativar mensagem de persistência.</label>
-                <div class="sub-setting">Intervalo para persistência (min): <input type="number" id="cfgPersistInt" min="0" step="1"></div>
-                <p class="setting-note">Nos modos com intervalo ou limite diário, a persistência sai no próximo gatilho recebido após esse tempo. No modo “todo gatilho”, cada gatilho envia a mensagem principal. A pausa por atendimento manual continua sendo uma exceção quando ativada.</p>
+                <p class="setting-note">No modo de intervalo, gatilhos antes do fim do prazo são ignorados; depois, o próximo gatilho envia a mensagem principal. A pausa por atendimento manual só se aplica quando ativada e com duração maior que zero.</p>
                 <label><input type="checkbox" id="cfgIgnoreGroups"> Ignorar mensagens de grupos.</label>
                 <label><input type="checkbox" id="cfgDetectChat"> Pausar respostas após atendimento manual.</label>
                 <div class="sub-setting">Duração da pausa manual (min; 0 desativa): <input type="number" id="cfgManualPause" min="0" step="1"></div>

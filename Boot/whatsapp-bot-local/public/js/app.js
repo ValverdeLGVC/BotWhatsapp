@@ -46,13 +46,10 @@ async function loadData() {
 
     document.getElementById('botToggle').checked = config.botEnabled;
     document.getElementById('msgMain').value = config.messages.main;
-    document.getElementById('msgPersist').value = config.messages.persistence;
 
     document.getElementById('cfgReplyMode').value = config.replyMode || (config.limitDaily === false ? 'always' : 'daily');
     document.getElementById('cfgCooldown').value = config.cooldownMinutes ?? 60;
     document.getElementById('cfgReplyDelay').value = config.replyDelaySeconds ?? 0;
-    document.getElementById('cfgPersistence').checked = config.persistenceEnabled;
-    document.getElementById('cfgPersistInt').value = config.persistenceInterval;
     document.getElementById('cfgIgnoreGroups').checked = config.ignoreGroups;
     document.getElementById('cfgDetectChat').checked = config.detectOpenChat;
     document.getElementById('cfgManualPause').value = config.manualPauseMinutes ?? 15;
@@ -68,7 +65,6 @@ document.getElementById('botToggle').addEventListener('change', async (e) => {
 
 async function saveMessages() {
     config.messages.main = document.getElementById('msgMain').value;
-    config.messages.persistence = document.getElementById('msgPersist').value;
     await updateConfig();
     alert('Mensagens salvas!');
 }
@@ -77,8 +73,6 @@ async function saveSettings() {
     config.replyMode = document.getElementById('cfgReplyMode').value;
     config.cooldownMinutes = Math.max(0, parseInt(document.getElementById('cfgCooldown').value, 10) || 0);
     config.replyDelaySeconds = Math.max(0, parseInt(document.getElementById('cfgReplyDelay').value, 10) || 0);
-    config.persistenceEnabled = document.getElementById('cfgPersistence').checked;
-    config.persistenceInterval = Math.max(0, parseInt(document.getElementById('cfgPersistInt').value, 10) || 0);
     config.ignoreGroups = document.getElementById('cfgIgnoreGroups').checked;
     config.detectOpenChat = document.getElementById('cfgDetectChat').checked;
     config.manualPauseMinutes = Math.max(0, parseInt(document.getElementById('cfgManualPause').value, 10) || 0);

@@ -1,16 +1,13 @@
 {
   "botEnabled": true,
-  "replyMode": "always",
+  "replyMode": "cooldown",
   "replyDelaySeconds": 1,
-  "cooldownMinutes": 0,
-  "persistenceEnabled": true,
-  "persistenceInterval": 1,
+  "cooldownMinutes": 15,
   "ignoreGroups": true,
   "detectOpenChat": true,
   "manualPauseMinutes": 0,
   "messages": {
-    "main": "Olá! Tudo bem? Recebi sua mensagem. No momento não estou disponível, mas retornarei em breve.",
-    "persistence": "Sua mensagem já foi registrada. Assim que possível, responderei."
+    "main": "🤖 *Olá! Tudo bem?*\n\nEsta é uma mensagem automática de atendimento. 😊\n\nNo momento, o Luiz Gustavo, do *Suporte de TI*, está realizando outros atendimentos durante seu horário de expediente e, por esse motivo, pode não conseguir responder imediatamente.\n\nPedimos, por gentileza, que aguarde um momento. Assim que concluir as atividades em andamento, ele retornará o seu contato o mais breve possível.\n\nAgradecemos imensamente pela compreensão, paciência e gentileza! 🙏\n\n🤖 *Mensagem automática — Suporte de TI | Luiz Gustavo*\n"
   },
   "triggers": [
     {
@@ -36,6 +33,36 @@
       "keyword": "oi",
       "active": true,
       "matchType": "word"
+    },
+    {
+      "id": "1790952326438",
+      "keyword": "boa tarde",
+      "matchType": "phrase",
+      "active": true
+    },
+    {
+      "id": "1790952357582",
+      "keyword": "bom dia ",
+      "matchType": "word",
+      "active": true
+    },
+    {
+      "id": "1790952367614",
+      "keyword": "boa tarde",
+      "matchType": "word",
+      "active": true
+    },
+    {
+      "id": "1790952372078",
+      "keyword": "ou",
+      "matchType": "word",
+      "active": true
+    },
+    {
+      "id": "1790952384750",
+      "keyword": "Luiz",
+      "matchType": "phrase",
+      "active": true
     }
   ]
 }

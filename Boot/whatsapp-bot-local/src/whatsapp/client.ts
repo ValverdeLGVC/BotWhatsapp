@@ -129,29 +129,25 @@ async function handleMessage(msg: Message, config: any) {
     const contactData = contacts[sender];
 
     let responseText = "";
-    let isPersistence = false;
 
     const lastMainTime = Number(contactData.lastMainTime || 0);
     const hasPreviousMain = lastMainTime > 0;
     const minutesSinceMain = hasPreviousMain ? (now - lastMainTime) / 60000 : Infinity;
     const replyMode = config.replyMode ?? (config.limitDaily === false ? 'always' : 'daily');
-    const persistenceInterval = Math.max(0, Number(config.persistenceInterval) || 0);
-    const persistenceDue = config.persistenceEnabled && hasPreviousMain && !contactData.persistenceSent &&
-        minutesSinceMain >= persistenceInterval;
     const sameDay = contactData.lastMainDate === today;
     const cooldownMinutes = Math.max(0, Number(config.cooldownMinutes) || 0);
     const cooldownElapsed = minutesSinceMain >= cooldownMinutes;
 
+    if (replyMode === 'cooldown' && hasPreviousMain && !cooldownElapsed) {
+        reportActivity('Gatilho reconhecido, mas o intervalo entre respostas ainda não terminou.');
+        return;
+    }
+
     if (replyMode === 'always' || (replyMode === 'daily' && !sameDay) ||
-        (replyMode === 'cooldown' && (!hasPreviousMain || (cooldownElapsed && !persistenceDue)))) {
+        (replyMode === 'cooldown' && (!hasPreviousMain || cooldownElapsed))) {
         responseText = config.messages.main;
         contactData.lastMainDate = today;
         contactData.lastMainTime = now;
-        contactData.persistenceSent = false;
-    } else if (persistenceDue && (replyMode === 'daily' ? sameDay : replyMode === 'cooldown')) {
-        responseText = config.messages.persistence;
-        contactData.persistenceSent = true;
-        isPersistence = true;
     } else {
         const reason = replyMode === 'daily' ? 'limite diário já atingido' : 'intervalo entre respostas ainda não terminou';
         reportActivity(`Gatilho reconhecido, mas o ${reason}.`);
@@ -175,7 +171,7 @@ async function handleMessage(msg: Message, config: any) {
     await writeJson('contacts', contacts);
     stats.sentToday++;
     broadcastEvent('stats', stats);
-    reportActivity(`Resposta ${isPersistence ? 'de persistência' : 'principal'} enviada para o gatilho "${matchedTrigger.keyword}".`);
+    reportActivity(`Resposta principal enviada para o gatilho "${matchedTrigger.keyword}".`);
 
     // Salvar Histórico
     let recipientName = sender.replace(/@(?:c\.us|lid)$/, '');
@@ -195,7 +191,7 @@ async function handleMessage(msg: Message, config: any) {
         messageIn: msg.body,
         trigger: matchedTrigger.keyword,
         messageOut: responseText,
-        type: isPersistence ? 'Persistência' : 'Principal',
+        type: 'Principal',
         timestamp: new Date().toISOString()
     });
     if (history.length > 500) history.pop();

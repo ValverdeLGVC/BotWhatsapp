@@ -11,14 +11,11 @@ export const defaultSettings = {
     replyMode: 'daily',
     replyDelaySeconds: 0,
     cooldownMinutes: 60,
-    persistenceEnabled: false,
-    persistenceInterval: 5,
     ignoreGroups: true,
     detectOpenChat: true,
     manualPauseMinutes: 15,
     messages: {
-        main: "Olá! Tudo bem? Recebi sua mensagem. No momento não estou disponível, mas retornarei em breve.",
-        persistence: "Sua mensagem já foi registrada. Assim que possível, responderei."
+        main: "Olá! Tudo bem? Recebi sua mensagem. No momento não estou disponível, mas retornarei em breve."
     },
     triggers: [
         { id: '1', keyword: 'bom dia', active: true, matchType: 'phrase' },
