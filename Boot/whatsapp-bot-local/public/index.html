@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Bot WhatsApp</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <h2>🤖 Bot Local</h2>
+        <ul id="menu">
+            <li data-tab="dashboard" class="active">Painel Principal</li>
+            <li data-tab="messages">Mensagens</li>
+            <li data-tab="triggers">Gatilhos</li>
+            <li data-tab="settings">Configurações</li>
+            <li data-tab="history">Histórico</li>
+        </ul>
+        <div class="bot-toggle-container">
+            <span>Status do Bot:</span>
+            <label class="switch">
+                <input type="checkbox" id="botToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </nav>
+
+    <main class="content">
+        <!-- Dashboard -->
+        <section id="dashboard" class="tab-content active">
+            <h1>Painel de Controle</h1>
+            <div class="cards">
+                <div class="card">
+                    <h3>Status Conexão</h3>
+                    <div id="connectionStatus" class="badge">Aguardando...</div>
+                    <div id="qrContainer" style="display:none;">
+                        <p>Escaneie o QR Code:</p>
+                        <canvas id="qrCanvas"></canvas>
+                    </div>
+                    <div class="actions">
+                        <button onclick="apiAction('restart')">Reiniciar</button>
+                        <button onclick="apiAction('disconnect')" class="danger">Desconectar</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Estatísticas de Hoje</h3>
+                    <p>Recebidas: <strong id="statReceived">0</strong></p>
+                    <p>Respostas Enviadas: <strong id="statSent">0</strong></p>
+                    <p>Última msg: <strong id="statLastTime">-</strong></p>
+                    <p class="activity-line">Atividade: <strong id="botActivity">Aguardando conexão...</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mensagens -->
+        <section id="messages" class="tab-content">
+            <h1>Editor de Mensagens</h1>
+            <div class="form-group">
+                <label>Mensagem Principal:</label>
+                <textarea id="msgMain" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Mensagem de Persistência:</label>
+                <textarea id="msgPersist" rows="4"></textarea>
+            </div>
+            <button onclick="saveMessages()" class="primary">Salvar Mensagens</button>
+        </section>
+
+        <!-- Gatilhos -->
+        <section id="triggers" class="tab-content">
+            <h1>Gatilhos de Resposta</h1>
+            <div class="add-trigger">
+                <input type="text" id="newTriggerWord" placeholder="Palavra-chave">
+                <select id="newTriggerType">
+                    <option value="word">Palavra Exata</option>
+                    <option value="phrase">Frase Completa</option>
+                    <option value="partial">Trecho de Texto</option>
+                </select>
+                <button onclick="addTrigger()">Adicionar</button>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Palavra</th>
+                        <th>Tipo</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="triggersList"></tbody>
+            </table>
+        </section>
+
+        <!-- Configurações -->
+        <section id="settings" class="tab-content">
+            <h1>Configurações e Regras</h1>
+            <div class="settings-list">
+                <div class="form-group">
+                    <label for="cfgReplyMode">Quando responder:</label>
+                    <select id="cfgReplyMode">
+                        <option value="always">Mensagem principal em todo gatilho</option>
+                        <option value="cooldown">Respeitar intervalo entre respostas</option>
+                        <option value="daily">Uma mensagem principal por dia</option>
+                    </select>
+                </div>
+                <div class="sub-setting">Intervalo entre respostas principais (min): <input type="number" id="cfgCooldown" min="0" step="1"></div>
+                <div class="sub-setting">Aguardar antes de responder (seg): <input type="number" id="cfgReplyDelay" min="0" step="1"></div>
+                <label><input type="checkbox" id="cfgPersistence"> Ativar mensagem de persistência.</label>
+                <div class="sub-setting">Intervalo para persistência (min): <input type="number" id="cfgPersistInt" min="0" step="1"></div>
+                <p class="setting-note">Nos modos com intervalo ou limite diário, a persistência sai no próximo gatilho recebido após esse tempo. No modo “todo gatilho”, cada gatilho envia a mensagem principal. A pausa por atendimento manual continua sendo uma exceção quando ativada.</p>
+                <label><input type="checkbox" id="cfgIgnoreGroups"> Ignorar mensagens de grupos.</label>
+                <label><input type="checkbox" id="cfgDetectChat"> Pausar respostas após atendimento manual.</label>
+                <div class="sub-setting">Duração da pausa manual (min; 0 desativa): <input type="number" id="cfgManualPause" min="0" step="1"></div>
+            </div>
+            <button onclick="saveSettings()" class="primary">Salvar Configurações</button>
+        </section>
+
+        <!-- Histórico -->
+        <section id="history" class="tab-content">
+            <div class="history-header">
+                <h1>Histórico de Respostas</h1>
+                <div class="history-actions">
+                    <input type="search" id="historySearch" placeholder="Buscar contato ou mensagem..." aria-label="Buscar no histórico">
+                    <button onclick="clearHistory()" class="danger">Limpar Histórico</button>
+                </div>
+            </div>
+            <p id="historyCount" class="history-count"></p>
+            <div id="historyTableWrap" class="history-table-wrap">
+                <table class="data-table history-table">
+                    <thead>
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Destinatário</th>
+                            <th>Mensagem recebida</th>
+                            <th>Gatilho</th>
+                            <th>Resposta enviada</th>
+                            <th>Tipo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyList"></tbody>
+                </table>
+            </div>
+            <p id="historyEmpty" class="history-empty" hidden></p>
+        </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
