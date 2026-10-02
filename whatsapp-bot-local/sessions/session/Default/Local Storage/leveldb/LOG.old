@@ -1,0 +1,6 @@
+2026/10/02-14:48:30.169 4b04 Reusing MANIFEST C:\Services.TI\Replait\System\Boot\whatsapp-bot-local\sessions\session\Default\Local Storage\leveldb/MANIFEST-000001
+2026/10/02-14:48:30.174 4b04 Recovering log #9
+2026/10/02-14:48:30.176 4b04 Reusing old log C:\Services.TI\Replait\System\Boot\whatsapp-bot-local\sessions\session\Default\Local Storage\leveldb/000009.log 
+2026/10/02-15:52:43.544 4c34 Level-0 table #13: started
+2026/10/02-15:52:43.552 4c34 Level-0 table #13: 11515 bytes OK
+2026/10/02-15:52:43.556 4c34 Delete type=0 #9
